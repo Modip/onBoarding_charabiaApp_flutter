@@ -1,6 +1,9 @@
 import 'dart:math';
 
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+
+import 'home.dart';
 
 class DynamicPage extends StatefulWidget {
   const DynamicPage({Key? key}) : super(key: key);
@@ -13,8 +16,8 @@ class _DynamicPageState extends State<DynamicPage>
     with SingleTickerProviderStateMixin {
   bool _showCenter = false;
   bool _showBottom = false;
+  bool _middleFirst = false;
 
-  bool play = false;
   late AnimationController controller;
   late Animation<double> animationFirst;
   late Animation<double> animationSeconde;
@@ -23,7 +26,29 @@ class _DynamicPageState extends State<DynamicPage>
   late Animation<double> animationFifth;
   late Animation<double> animationSixth;
 
+  double sizeTopcenter = 370;
+  double sizeLeftcenter = 40;
+  double sizeRightcenter = 40;
 
+  double sizeTopFirst = 80;
+  double sizeTopSecond = 100;
+  double sizeTopFourth = 230;
+  double sizeBottomFifth = 120;
+  double sizeTopSixth = 0;
+
+  double sizeTopThird = 170;
+  double sizeRightThird = 165;
+  double sizeLeftThird = 0;
+  double rotThree = -.2;
+
+  double sizeRightSixth = 0;
+  double sizeLeftSixth = 217;
+  double sizeBottomSixth = 100;
+  double rotSix = -0.2;
+
+  double sizeLeftFifth = 20;
+  double sizeRightFifth = 130;
+  double rotFive = .25;
 
   @override
   void initState() {
@@ -64,7 +89,7 @@ class _DynamicPageState extends State<DynamicPage>
     });
   }
 
-  String displayText = "";
+  String displayText = "What's going on ?";
 
   List string = [
     "To keep track of important events in your friends' lives",
@@ -72,12 +97,50 @@ class _DynamicPageState extends State<DynamicPage>
     "Where cherished momories find a home, allowing parent to safely store"
   ];
 
-  void changeText() {
-    setState(() {
-      play = !play;
-      displayText = string[Random().nextInt(string.length)];
+  final imgs = [
+    "assets/images/lion2.jpg",
+    "assets/images/lion1.jpg",
+    "assets/images/lion3.jpg",
+  ];
 
-    
+  void changePositionAndText() {
+    setState(() {
+      _middleFirst = !_middleFirst;
+      if (sizeTopFirst == 80) {
+        sizeTopSecond = 600;
+        sizeTopThird = 390;
+        sizeRightThird = 70;
+        sizeLeftThird = 70;
+        rotThree = 0;
+        sizeTopFirst = 630;
+        sizeTopFourth = 600;
+        sizeBottomFifth = -40;
+        sizeBottomSixth = 5;
+        sizeTopcenter = 300;
+      } else if (sizeBottomSixth == 5) {
+        sizeTopThird = 630;
+        sizeRightThird = 165;
+        sizeLeftThird = 0;
+        sizeTopFirst = 700;
+
+        sizeTopcenter = 390;
+        sizeRightSixth = 80;
+        sizeLeftSixth = 80;
+        sizeBottomSixth = 180;
+        rotSix = 0;
+      } else if (sizeBottomSixth == 180) {
+        _middleFirst = !_middleFirst;
+        sizeBottomSixth = 30;
+        sizeLeftSixth = 217;
+        sizeRightSixth = 0;
+        sizeTopcenter = 280;
+        sizeLeftFifth = 40;
+        sizeRightFifth = 40;
+        sizeBottomFifth = 170;
+        rotFive = 0;
+      }
+
+      displayText = string[Random().nextInt(string.length)];
     });
   }
 
@@ -87,10 +150,15 @@ class _DynamicPageState extends State<DynamicPage>
       body: Stack(
         children: [
           _showCenter
-              ? const Center(
-                  child: Text(
-                    "What's going now",
-                    style: TextStyle(fontSize: 22),
+              ? Positioned(
+                  top: sizeTopcenter,
+                  left: sizeLeftcenter,
+                  right: sizeRightcenter,
+                  child: Center(
+                    child: Text(
+                      displayText,
+                      style: const TextStyle(fontSize: 22),
+                    ),
                   ),
                 )
               : Container(),
@@ -101,7 +169,7 @@ class _DynamicPageState extends State<DynamicPage>
             duration: const Duration(milliseconds: 400),
             left: 0,
             right: 140,
-            top: play ? 700 : 80,
+            top: sizeTopFirst,
             child: AnimatedBuilder(
               animation: animationFirst,
               builder: (context, index) {
@@ -159,7 +227,7 @@ class _DynamicPageState extends State<DynamicPage>
                                           "06/01/2024 - ",
                                           style: TextStyle(fontSize: 10),
                                         ),
-                                        Text("modip",
+                                        Text("Modip",
                                             style: TextStyle(fontSize: 10)),
                                       ],
                                     ),
@@ -215,7 +283,7 @@ class _DynamicPageState extends State<DynamicPage>
             duration: const Duration(milliseconds: 400),
             left: 210,
             right: 0,
-            top: play ? 600 : 100,
+            top: sizeTopSecond,
             child: AnimatedBuilder(
               animation: animationSeconde,
               builder: (context, index) {
@@ -324,9 +392,9 @@ class _DynamicPageState extends State<DynamicPage>
           AnimatedPositioned(
             curve: Curves.easeInOut,
             duration: const Duration(milliseconds: 400),
-            left: play ? 70 : 0,
-            right: play ? 70 : 165,
-            top: play ? 400 : 170,
+            left: sizeLeftThird,
+            right: sizeRightThird,
+            top: sizeTopThird,
             child: AnimatedBuilder(
               animation: animationThirdth,
               builder: (context, index) {
@@ -336,9 +404,8 @@ class _DynamicPageState extends State<DynamicPage>
                   transform: Matrix4.translationValues(x, 0, 0),
                   child: Container(
                     transform: Matrix4.translationValues(0, 0, 0)
-                      ..rotateZ(play ? 0 : -.2),
+                      ..rotateZ(rotThree),
                     height: 185,
-                    decoration: const BoxDecoration(color: Colors.white),
                     child: Stack(
                       children: [
                         Positioned(
@@ -387,12 +454,21 @@ class _DynamicPageState extends State<DynamicPage>
                                   Container(
                                     height: 100,
                                     decoration: BoxDecoration(
-                                      color: Colors.black,
                                       borderRadius: BorderRadius.circular(12),
-                                      image: const DecorationImage(
-                                          fit: BoxFit.cover,
-                                          image: AssetImage(
-                                              "assets/images/lion3.jpg")),
+                                    ),
+                                    child: Center(
+                                      child: CarouselSlider.builder(
+                                          itemCount: imgs.length,
+                                          options: CarouselOptions(
+                                              autoPlay: true,
+                                              viewportFraction: 1,
+                                              height: 100),
+                                          itemBuilder:
+                                              (context, index, realIndex) {
+                                            final image = imgs[index];
+
+                                            return buildImage(image, index);
+                                          }),
                                     ),
                                   ),
                                 ],
@@ -457,9 +533,9 @@ class _DynamicPageState extends State<DynamicPage>
           AnimatedPositioned(
             curve: Curves.easeInOut,
             duration: const Duration(milliseconds: 400),
-            left: 230,
-            right: 0,
-            top: play ? 600 : 270,
+            left: 240,
+            right: -10,
+            top: sizeTopFourth,
             child: AnimatedBuilder(
               animation: animationFourth,
               builder: (context, index) {
@@ -468,8 +544,7 @@ class _DynamicPageState extends State<DynamicPage>
                 return Transform(
                   transform: Matrix4.translationValues(x, 0, 0),
                   child: Container(
-                    transform: Matrix4.translationValues(0, 0, 0)
-                      ..rotateZ(-.13),
+                    transform: Matrix4.translationValues(0, 0, 0)..rotateZ(.2),
                     height: 70,
                     child: Stack(
                       children: [
@@ -573,9 +648,9 @@ class _DynamicPageState extends State<DynamicPage>
           AnimatedPositioned(
             curve: Curves.easeInOut,
             duration: const Duration(milliseconds: 400),
-            left: 20,
-            right: 130,
-            bottom: play ? -40 : 120,
+            left: sizeLeftFifth,
+            right: sizeRightFifth,
+            bottom: sizeBottomFifth,
             child: AnimatedBuilder(
               animation: animationFifth,
               builder: (context, index) {
@@ -584,7 +659,8 @@ class _DynamicPageState extends State<DynamicPage>
                 return Transform(
                   transform: Matrix4.translationValues(x, 0, 0),
                   child: Container(
-                    transform: Matrix4.translationValues(0, 0, 0)..rotateZ(.25),
+                    transform: Matrix4.translationValues(0, 0, 0)
+                      ..rotateZ(rotFive),
                     height: 220,
                     child: Stack(
                       children: [
@@ -703,9 +779,9 @@ class _DynamicPageState extends State<DynamicPage>
           AnimatedPositioned(
             curve: Curves.easeInOut,
             duration: const Duration(milliseconds: 400),
-            left: 217,
-            right: 0,
-            bottom: play ? 5 : 100,
+            left: sizeLeftSixth,
+            right: sizeRightSixth,
+            bottom: sizeBottomSixth,
             child: AnimatedBuilder(
               animation: animationFourth,
               builder: (context, index) {
@@ -714,7 +790,8 @@ class _DynamicPageState extends State<DynamicPage>
                 return Transform(
                   transform: Matrix4.translationValues(x, 0, 0),
                   child: Container(
-                    transform: Matrix4.translationValues(0, 0, 0)..rotateZ(-.2),
+                    transform: Matrix4.translationValues(0, 0, 0)
+                      ..rotateZ(rotSix),
                     height: 110,
                     child: Stack(
                       children: [
@@ -828,7 +905,14 @@ class _DynamicPageState extends State<DynamicPage>
                     child: IconButton(
                       onPressed: (() {
                         setState(() {
-                          changeText();
+                          if (_middleFirst = !_middleFirst) {
+                            changePositionAndText();
+                          } else {
+                            Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const Home()));
+                          }
                         });
                       }),
                       icon: const Icon(
@@ -844,4 +928,11 @@ class _DynamicPageState extends State<DynamicPage>
       ),
     );
   }
+
+  Widget buildImage(String image, int index) => Container(
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            image:
+                DecorationImage(image: AssetImage(image), fit: BoxFit.cover)),
+      );
 }

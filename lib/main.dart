@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onboarding_charabia_app/draft.dart';
 import 'package:onboarding_charabia_app/dynamic_page.dart';
 
 void main() {
